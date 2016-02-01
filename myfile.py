@@ -8,9 +8,22 @@ import re
 import pandas as pd
 import tldextract
 
+df=pd.read_csv('urls.csv')
+#print df
+
+#new_urls = deque(dfa)
+
 # a queue of urls to be crawled
-new_urls = deque(['http://www.hungryharvest.net/','http://www.themoscowtimes.com/contact_us/index.php'])
-#new_urls = deque(['http://www.hungryharvest.net/'])
+#ew_urls = deque(['http://www.hungryharvest.net/','http://www.themoscowtimes.com/contact_us/index.php'])
+new_urls = deque(['placeholder'])
+#print new_urls
+
+
+for index, row in df.iterrows():
+    print row['url']
+    new_urls.append(str(row['url']))
+
+print new_urls
 
 
 # a set of urls that we have already crawled
@@ -28,6 +41,8 @@ while len(new_urls):
     url = new_urls.popleft()
     processed_urls.add(url)
 
+    print url
+
     # extract base url to resolve relative links
     parts = urlsplit(url)
     base_url = "{0.scheme}://{0.netloc}".format(parts)
@@ -40,8 +55,8 @@ while len(new_urls):
     rdomain = ext.registered_domain
 
     #print domain
-    print "url: " + url
-    print "rdomain: "+rdomain
+    #print "url: " + url
+    #print "rdomain: "+rdomain
 
     # get url's content
     #print("Processing %s" % url)
@@ -58,13 +73,13 @@ while len(new_urls):
     #print new_emails
 
     for emails1 in new_emails:
-        print "Emails:", emails1
+        print "Email Found:", emails1
         myarray.append([url,emails1])
 
     #emails = set()
 
     # create a beutiful soup for the html document
-    soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text,"lxml")
 
     # find and process all the anchors in the document
     for anchor in soup.find_all("a"):
@@ -92,3 +107,7 @@ while len(new_urls):
 
 #print emails
 print "Array:", myarray
+
+mydf=pd.DataFrame(myarray, columns=['url','email'])
+
+mydf.to_csv('emails.csv', index=False, encoding='utf-8')
