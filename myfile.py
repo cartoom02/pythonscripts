@@ -43,6 +43,9 @@ while len(new_urls):
 
     print url
 
+
+    print "New URL count" ,len(new_urls)
+    print "Processed URL count" ,len(processed_urls)
     # extract base url to resolve relative links
     parts = urlsplit(url)
     base_url = "{0.scheme}://{0.netloc}".format(parts)
@@ -101,7 +104,7 @@ while len(new_urls):
          #   print 'yep'
 
         # add the new url to the queue if it was not enqueued nor processed yet
-        if not link in new_urls and not link in processed_urls and rdomain in link:
+        if not link in new_urls and not link in processed_urls and rdomain in link and len(processed_urls) < 30 and len(new_urls) < 30:
             new_urls.append(link)
         #print new_urls
 
